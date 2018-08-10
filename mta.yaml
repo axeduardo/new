@@ -7,6 +7,13 @@ modules:
     path: db
     requires:
       - name: hdi_db
+        properties:
+          TARGET_CONTAINER: '~{hdi-container-name}'
+      - name: CROSS_SCHEMA_PRODUCTS
+        group: SERVICE_REPLACEMENTS
+        properties:
+          key: ServiceName_1
+          service: '~{the-service-name}'
   - name: js
     type: nodejs
     path: js
@@ -17,17 +24,15 @@ modules:
     requires:
       - name: hdi_db
       - name: db
-
   - name: web
     type: html5
     path: web
     requires:
-     - name: js_api
-       group: destinations
-       properties:
+      - name: js_api
+        group: destinations
+        properties:
           name: js_be
-          url: ~{url}
-
+          url: '~{url}'
 resources:
   - name: hdi_db
     parameters:
@@ -36,3 +41,7 @@ resources:
     properties:
       hdi-container-name: '${service-name}'
     type: com.sap.xs.hdi-container
+  - name: CROSS_SCHEMA_PRODUCTS
+    properties:
+      the-service-name: '${service-name}'
+    type: org.cloudfoundry.existing-service
